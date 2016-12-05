@@ -20,15 +20,14 @@ def input_students
 end
 
 def print_header
-    puts "The students of Villains Academy"
-    puts "-------------"
+    puts "The students of Villains Academy".center(100)
+    puts "-------------".center(100)
 end
 
 def print_students(students)
     students.each_with_index do |student, index|
         if student[:name].length < 12
-            print "#{index + 1}. #{student[:name]}, IQ is #{student[:iq]} "
-            puts "(#{student[:cohort]} cohort)"
+            puts "#{index + 1}. #{student[:name]}, IQ is #{student[:iq]} (#{student[:cohort]} cohort)".center(100)
         end
     end
 end
@@ -45,7 +44,7 @@ def print_using_while(students)
 end
 
 def print_specific_letter(students)
-    puts "Enter a letter to print names starting with that letter"
+    print "Enter a letter to print names starting with that letter: "
     letter = gets.chomp
     
     puts "Here are the students with names beginning with #{letter}"
@@ -58,7 +57,9 @@ def print_specific_letter(students)
 end
 
 def print_footer(names)
-    puts "Overall, we have #{names.count} great students"
+    puts "-------------".center(100)
+    puts "Overall, we have #{names.count} great students".center(100)
+    puts
 end
 
 students = input_students
