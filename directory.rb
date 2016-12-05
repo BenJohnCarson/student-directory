@@ -1,9 +1,4 @@
-def input_students
-    puts "Please enter the names of the students"
-    puts "To finish, just hit return twice"
-    # Create and empty array
-    students = []
-    months = [	
+$months = [	
         :january,
 	    :febuary,
 		:march,
@@ -16,7 +11,14 @@ def input_students
 		:october,
 		:november,
 		:december
-    ]
+]
+
+def input_students
+    puts "Please enter the names of the students"
+    puts "To finish, just hit return twice"
+    # Create and empty array
+    students = []
+
     # Get the first name
     name = gets.chomp
     # While the name is not empty, repeat this code
@@ -29,7 +31,7 @@ def input_students
         cohort = gets.chomp.downcase.to_sym
         cohort = :november if cohort.empty?
         
-        while !months.include? cohort do
+        while !$months.include? cohort do
             puts "Please enter a valid month"
             cohort = gets.chomp.downcase.to_sym
         end
@@ -47,14 +49,32 @@ end
 def print_header
     puts "The students of Villains Academy".center(100)
     puts "-------------".center(100)
+    puts
 end
 
 def print_students(students)
-    students.each_with_index do |student, index|
-        if student[:name].length < 12
-            puts "#{index + 1}. #{student[:name]}, IQ is #{student[:iq]} (#{student[:cohort]} cohort)".center(100)
-        end
+    cohorts = []
+    # Create an ordered array of possible cohorts
+    students.map do |student| 
+        cohorts[$months.index(student[:cohort])] = student[:cohort]
     end
+    
+    cohorts.compact!
+
+    cohorts.each do |cohort|
+        # Position in list of each student
+        num = 1
+          
+        puts "Students in the #{cohort.to_s.capitalize} cohort".center(100)
+        puts "-------------".center(100)
+        students.each_with_index do |student, index|
+            if student[:cohort] == cohort
+                puts "#{num}. #{student[:name]}, IQ is #{student[:iq]}".center(100)
+                num += 1
+            end
+        end
+        puts
+    end    
 end
 
 def print_using_while(students)
@@ -92,4 +112,3 @@ students = input_students
 print_header
 print_students(students)
 print_footer(students)
-print_specific_letter(students)
