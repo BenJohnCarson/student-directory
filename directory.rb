@@ -3,14 +3,39 @@ def input_students
     puts "To finish, just hit return twice"
     # Create and empty array
     students = []
+    months = [	
+        :january,
+	    :febuary,
+		:march,
+		:april,
+		:may,
+		:june,
+		:july,
+		:august,
+		:september,
+		:october,
+		:november,
+		:december
+    ]
     # Get the first name
     name = gets.chomp
     # While the name is not empty, repeat this code
     while !name.empty? do
         puts "What's their IQ?"
         iq = gets.chomp
+        iq = "Unknown" if iq.empty?
+        
+        puts "And which month's cohort are they in?"
+        cohort = gets.chomp.downcase.to_sym
+        cohort = :november if cohort.empty?
+        
+        while !months.include? cohort do
+            puts "Please enter a valid month"
+            cohort = gets.chomp.downcase.to_sym
+        end
+        
         # Add the student hash to the array
-        students << {name: name, iq: iq, cohort: :november}
+        students << {name: name, iq: iq, cohort: cohort}
         puts "Now we have #{students.count} students."
         # Get another name from the user
         name = gets.chomp
