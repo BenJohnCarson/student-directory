@@ -28,6 +28,19 @@ def print(students)
     end
 end
 
+def print_specific_letter(students)
+    puts "Enter a letter to print names starting with that letter"
+    letter = gets.chomp
+    
+    puts "Here are the students with names beginning with #{letter}"
+    
+    students.each do |student|
+        if letter.capitalize == student[:name][0].capitalize
+            puts "#{student[:name]} (#{student[:cohort]} cohort)"
+        end
+    end
+end
+
 def print_footer(names)
     puts "Overall, we have #{names.count} great students"
 end
@@ -37,3 +50,4 @@ students = input_students
 print_header
 print(students)
 print_footer(students)
+print_specific_letter(students)
