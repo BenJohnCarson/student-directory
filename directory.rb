@@ -1,3 +1,5 @@
+require 'csv'
+
 @center_value = 100
 @students = []
 @months = [	
@@ -111,33 +113,19 @@ end
 def save_students
     filename = get_filename
     # open file for writing ("w")
-    File.open(filename, "w") do |file|
+    CSV.open(filename, "w") do |csv|
         # iterate over the array of students
         @students.each do |student|
-            student_data = [student[:name], student[:iq], student[:cohort]]
-            csv_line = student_data.join(",")
-            file.puts csv_line
+            csv << [student[:name], student[:iq], student[:cohort]]
         end
     end
 end
-=begin
+
 def load_students(filename = "students.csv")
     @students = []
-    file = File.open(filename, "r")
-    file.readlines.each do |line|
-        name, iq, cohort = line.chomp.split(",")
+    CSV.foreach(filename) do |row|
+        name, iq, cohort = row
         add_student(name, iq, cohort)
-    end
-    file.close
-end
-=end
-def load_students(filename = "students.csv")
-    @students = []
-    File.open(filename, "r") do |file|
-        file.readlines.each do |line|
-            name, iq, cohort = line.chomp.split(",")
-            add_student(name, iq, cohort)
-        end
     end
 end
 
