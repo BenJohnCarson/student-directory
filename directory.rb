@@ -19,8 +19,8 @@ def input_students
     # Create and empty array
     students = []
 
-    # Get the first name
-    name = gets.chomp
+    # Get the first name, using gsub instead of chomp
+    name = gets.gsub(/\n/, "")
     # While the name is not empty, repeat this code
     while !name.empty? do
         puts "What's their IQ?"
