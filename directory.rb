@@ -37,7 +37,7 @@ def input_students
         end
         
         # Add the student hash to the array
-        @students << {name: name, iq: iq, cohort: cohort}
+        add_student(name, iq, cohort)
         if @students.count == 1
             puts "Now we have #{@students.count} student."
         else
@@ -46,6 +46,11 @@ def input_students
         # Get another name from the user
         name = STDIN.gets.chomp
     end
+end
+
+def add_student(name, iq, cohort)
+    cohort = cohort.to_sym
+    @students << {name: name, iq: iq, cohort: cohort}
 end
 
 def print_header
@@ -113,7 +118,9 @@ def load_students(filename = "students.csv")
     file = File.open(filename, "r")
     file.readlines.each do |line|
         name, iq, cohort = line.chomp.split(",")
-        @students << {name: name, iq: iq, cohort: cohort.to_sym}
+        #puts "#{name} + #{iq} + #{cohort}"
+        add_student(name, iq, cohort)
+        #puts @students
     end
     file.close
 end
