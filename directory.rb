@@ -37,7 +37,7 @@ def get_iq_cohort
     iq_cohort = []
     puts "What's their IQ?"
     iq = STDIN.gets.chomp
-    iq.empty? ? iq_cohort << "Unknow" : iq_cohort << iq
+    iq.empty? ? iq_cohort << "Unknown" : iq_cohort << iq
 
     puts "Which month's cohort are they in?"
     cohort = STDIN.gets.chomp.downcase.to_sym
@@ -92,6 +92,7 @@ def ordered_cohorts
         cohorts[@months.index(student[:cohort])] = student[:cohort]
     end
     cohorts.compact!
+    cohorts
 end
 
 def print_footer
@@ -110,16 +111,16 @@ end
 def save_students
     filename = get_filename
     # open file for writing ("w")
-    file = File.open(filename, "w")
-    # iterate over the array of students
-    @students.each do |student|
-        student_data = [student[:name], student[:iq], student[:cohort]]
-        csv_line = student_data.join(",")
-        file.puts csv_line
+    File.open(filename, "w") do |file|
+        # iterate over the array of students
+        @students.each do |student|
+            student_data = [student[:name], student[:iq], student[:cohort]]
+            csv_line = student_data.join(",")
+            file.puts csv_line
+        end
     end
-    file.close
 end
-
+=begin
 def load_students(filename = "students.csv")
     @students = []
     file = File.open(filename, "r")
@@ -128,6 +129,16 @@ def load_students(filename = "students.csv")
         add_student(name, iq, cohort)
     end
     file.close
+end
+=end
+def load_students(filename = "students.csv")
+    @students = []
+    File.open(filename, "r") do |file|
+        file.readlines.each do |line|
+            name, iq, cohort = line.chomp.split(",")
+            add_student(name, iq, cohort)
+        end
+    end
 end
 
 def get_filename
@@ -190,6 +201,8 @@ def process(selection)
             sleep 1
         when "5"
             @students = []
+            puts "Students cleared successfully"
+            sleep 1
         when "9"
             puts "Exiting program..."
             exit # terminates the program
