@@ -1,4 +1,6 @@
-$months = [	
+@center_value = 100
+@students = []
+@months = [	
         :january,
 	    :febuary,
 		:march,
@@ -13,13 +15,9 @@ $months = [
 		:december
 ]
 
-$center_value = 100
-
 def input_students
     puts "Please enter the names of the students"
     puts "To finish, just hit return twice"
-    # Create and empty array
-    students = []
 
     # Get the first name, using gsub instead of chomp
     name = gets.gsub(/\n/, "")
@@ -33,37 +31,35 @@ def input_students
         cohort = gets.chomp.downcase.to_sym
         cohort = :november if cohort.empty?
         
-        while !$months.include? cohort do
+        while !@months.include? cohort do
             puts "Please enter a valid month"
             cohort = gets.chomp.downcase.to_sym
         end
         
         # Add the student hash to the array
-        students << {name: name, iq: iq, cohort: cohort}
-        if students.count == 1
-            puts "Now we have #{students.count} student."
+        @students << {name: name, iq: iq, cohort: cohort}
+        if @students.count == 1
+            puts "Now we have #{@students.count} student."
         else
-            puts "Now we have #{students.count} students."
+            puts "Now we have #{@students.count} students."
         end
         # Get another name from the user
         name = gets.chomp
     end
-    # Return the array of students
-    students
 end
 
 def print_header
-    puts "The students of Villains Academy".center($center_value)
-    puts "-------------".center($center_value)
+    puts "The students of Villains Academy".center(@center_value)
+    puts "-------------".center(@center_value)
     puts
 end
 
-def print_students(students)
-    if students.count >= 1
+def print_students_list
+    if @students.count >= 1
         cohorts = []
         # Create an ordered array of possible cohorts
-        students.map do |student| 
-            cohorts[$months.index(student[:cohort])] = student[:cohort]
+        @students.map do |student| 
+            cohorts[@months.index(student[:cohort])] = student[:cohort]
         end
         
         cohorts.compact!
@@ -72,81 +68,64 @@ def print_students(students)
             # Position in list of each student
             num = 1
               
-            puts "Students in the #{cohort.to_s.capitalize} cohort".center($center_value)
-            puts "-------------".center($center_value)
-            students.each_with_index do |student, index|
+            puts "Students in the #{cohort.to_s.capitalize} cohort".center(@center_value)
+            puts "-------------".center(@center_value)
+            @students.each_with_index do |student, index|
                 if student[:cohort] == cohort
-                    puts "#{num}. #{student[:name]}, IQ is #{student[:iq]}".center($center_value)
+                    puts "#{num}. #{student[:name]}, IQ is #{student[:iq]}".center(@center_value)
                     num += 1
                 end
             end
             puts
         end
     else
-        puts "We have no students :(".center($center_value)
+        puts "We have no students :(".center(@center_value)
         puts
     end
 end
 
-def print_using_while(students)
-    student_num = 0
-    
-    while student_num < students.length do
-        print "#{student_num + 1}. #{students[student_num][:name]} "
-        puts "(#{students[student_num][:cohort]} cohort)"
-        
-        student_num += 1
-    end
-end
-
-def print_specific_letter(students)
-    print "Enter a letter to print names starting with that letter: "
-    letter = gets.chomp
-    
-    puts "Here are the students with names beginning with #{letter}"
-    
-    students.each do |student|
-        if letter.capitalize == student[:name][0].capitalize
-            puts "#{student[:name]} (#{student[:cohort]} cohort)"
-        end
-    end
-end
-
-def print_footer(names)
-    if names.count >= 1
-        puts "-------------".center($center_value)
-        if names.length == 1
-            puts "Overall, we have #{names.count} great student".center($center_value)
+def print_footer
+    if @students.count >= 1
+        puts "-------------".center(@center_value)
+        if @students.length == 1
+            puts "Overall, we have #{@students.count} great student".center(@center_value)
             puts
         else
-            puts "Overall, we have #{names.count} great students".center($center_value)
+            puts "Overall, we have #{@students.count} great students".center(@center_value)
             puts
         end
     end
 end
 
 def interactive_menu
-    students = []
     loop do
-        # 1. print the menu and ask user for input
-        puts "1. Input the students"
-        puts "2. Show the students"
-        puts "9. Exit" # 9 because we will add more options
-        # 2. read input and save to variable
-        selection = gets.chomp
-        # 3. do what user requested
-        case selection
-            when "1"
-                students = input_students
-            when "2"
-                print_header
-                print_students(students)
-                print_footer(students)
-            when "9"
-                exit # terminates the program
-            else
-                puts "Not a valid option, try again"
-        end
+        print_menu
+        process(gets.chomp)
+    end
+end
+
+def print_menu
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit" # 9 because we will add more options
+end
+
+def show_students
+    print_header
+    print_students_list
+    print_footer
+end
+
+def process(selection)
+    case selection
+        when "1"
+            input_students
+        when "2"
+            show_students
+        when "9"
+            exit # terminates the program
+        else
+            puts "Not a valid option, try again"
     end
 end
 
