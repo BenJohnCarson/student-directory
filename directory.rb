@@ -18,25 +18,10 @@
 def input_students
     puts "Please enter the names of the students"
     puts "To finish, just hit return twice"
-
-    # Get the first name, using gsub instead of chomp
-    name = STDIN.gets.gsub(/\n/, "")
+    name = STDIN.gets.chomp.capitalize
     # While the name is not empty, repeat this code
     while !name.empty? do
-        puts "What's their IQ?"
-        iq = STDIN.gets.chomp
-        iq = "Unknown" if iq.empty?
-        
-        puts "And which month's cohort are they in?"
-        cohort = STDIN.gets.chomp.downcase.to_sym
-        cohort = :november if cohort.empty?
-        
-        while !@months.include? cohort do
-            puts "Please enter a valid month"
-            cohort = STDIN.gets.chomp.downcase.to_sym
-        end
-        
-        # Add the student hash to the array
+        iq, cohort = get_iq_cohort
         add_student(name, iq, cohort)
         if @students.count == 1
             puts "Now we have #{@students.count} student."
@@ -44,8 +29,25 @@ def input_students
             puts "Now we have #{@students.count} students."
         end
         # Get another name from the user
-        name = STDIN.gets.chomp
+        name = STDIN.gets.chomp.capitalize
     end
+end
+
+def get_iq_cohort
+    iq_cohort = []
+    puts "What's their IQ?"
+    iq = STDIN.gets.chomp
+    iq.empty? ? iq_cohort << "Unknow" : iq_cohort << iq
+
+    puts "Which month's cohort are they in?"
+    cohort = STDIN.gets.chomp.downcase.to_sym
+    cohort.empty? ? iq_cohort << :november : iq_cohort << cohort
+    # If a month is entered, check it's valid
+    while !@months.include? iq_cohort[1] do
+        puts "Please enter a valid month"
+        iq_cohort[1] = STDIN.gets.chomp.downcase.to_sym
+    end
+    iq_cohort
 end
 
 def add_student(name, iq, cohort)
@@ -61,14 +63,8 @@ end
 
 def print_students_list
     if @students.count >= 1
-        cohorts = []
-        # Create an ordered array of possible cohorts
-        @students.map do |student| 
-            cohorts[@months.index(student[:cohort])] = student[:cohort]
-        end
+        cohorts = ordered_cohorts
         
-        cohorts.compact!
-    
         cohorts.each do |cohort|
             # Position in list of each student
             num = 1
@@ -87,6 +83,15 @@ def print_students_list
         puts "We have no students :(".center(@center_value)
         puts
     end
+end
+
+def ordered_cohorts
+    cohorts = []
+    # Create an ordered array of possible cohorts
+    @students.map do |student| 
+        cohorts[@months.index(student[:cohort])] = student[:cohort]
+    end
+    cohorts.compact!
 end
 
 def print_footer
