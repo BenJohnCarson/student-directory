@@ -20,20 +20,20 @@ def input_students
     puts "To finish, just hit return twice"
 
     # Get the first name, using gsub instead of chomp
-    name = gets.gsub(/\n/, "")
+    name = STDIN.gets.gsub(/\n/, "")
     # While the name is not empty, repeat this code
     while !name.empty? do
         puts "What's their IQ?"
-        iq = gets.chomp
+        iq = STDIN.gets.chomp
         iq = "Unknown" if iq.empty?
         
         puts "And which month's cohort are they in?"
-        cohort = gets.chomp.downcase.to_sym
+        cohort = STDIN.gets.chomp.downcase.to_sym
         cohort = :november if cohort.empty?
         
         while !@months.include? cohort do
             puts "Please enter a valid month"
-            cohort = gets.chomp.downcase.to_sym
+            cohort = STDIN.gets.chomp.downcase.to_sym
         end
         
         # Add the student hash to the array
@@ -44,7 +44,7 @@ def input_students
             puts "Now we have #{@students.count} students."
         end
         # Get another name from the user
-        name = gets.chomp
+        name = STDIN.gets.chomp
     end
 end
 
@@ -109,8 +109,8 @@ def save_students
     file.close
 end
 
-def load_students
-    file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+    file = File.open(filename, "r")
     file.readlines.each do |line|
         name, iq, cohort = line.chomp.split(",")
         @students << {name: name, iq: iq, cohort: cohort.to_sym}
@@ -118,10 +118,22 @@ def load_students
     file.close
 end
 
+def try_load_students
+    filename = ARGV.first # First argument from the command line
+    return if filename.nil? # Get out of the method if it isn't given
+    if File.exists?(filename) # If it exists
+        load_students(filename)
+        puts "Loaded #{@students.count} from #{filename}"
+    else # If it doesn't exist
+        puts "Sorry, #{filename} doesn't exist."
+        exit # Quits the program
+    end
+end
+
 def interactive_menu
     loop do
         print_menu
-        process(gets.chomp)
+        process(STDIN.gets.chomp)
     end
 end
 
@@ -156,4 +168,5 @@ def process(selection)
     end
 end
 
+try_load_students
 interactive_menu
