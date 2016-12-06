@@ -108,8 +108,9 @@ def print_footer
 end
 
 def save_students
+    filename = get_filename
     # open file for writing ("w")
-    file = File.open("students.csv", "w")
+    file = File.open(filename, "w")
     # iterate over the array of students
     @students.each do |student|
         student_data = [student[:name], student[:iq], student[:cohort]]
@@ -120,6 +121,7 @@ def save_students
 end
 
 def load_students(filename = "students.csv")
+    @students = []
     file = File.open(filename, "r")
     file.readlines.each do |line|
         name, iq, cohort = line.chomp.split(",")
@@ -128,14 +130,23 @@ def load_students(filename = "students.csv")
     file.close
 end
 
+def get_filename
+    puts "Please enter a filename"
+    puts "Press enter again to use default name"
+    filename = STDIN.gets.chomp
+    
+    return "students.csv" if filename.empty?
+    
+    !filename.end_with?(".csv") ? (filename << ".csv") : (filename)
+end
+
 def try_load_students(filename = "students.csv")
     filename = ARGV.first if !ARGV.empty?  # First argument from the command line
     if File.exists?(filename) # If it exists
         load_students(filename)
         puts "Loaded #{@students.count} from #{filename}"
     else # If it doesn't exist
-        puts "Sorry, #{filename} doesn't exist."
-        exit # Quits the program
+        puts "Sorry, #{filename} doesn't exist. No students were loaded."
     end
 end
 
@@ -149,8 +160,9 @@ end
 def print_menu
     puts "1. Input the students"
     puts "2. Show the students"
-    puts "3. Save the students to students.csv"
-    puts "4. Load the students from students.csv"
+    puts "3. Save the students to a file"
+    puts "4. Load the students from a file"
+    puts "5. Clear current students"
     puts "9. Exit" # 9 because we will add more options
 end
 
@@ -166,11 +178,20 @@ def process(selection)
             input_students
         when "2"
             show_students
+            sleep 1
         when "3"
             save_students
+            puts "Save successful!"
+            sleep 1
         when "4"
-            load_students
+            filename = get_filename
+            load_students(filename)
+            puts "Loading successful!"
+            sleep 1
+        when "5"
+            @students = []
         when "9"
+            puts "Exiting program..."
             exit # terminates the program
         else
             puts "Not a valid option, try again"
