@@ -13,6 +13,8 @@ $months = [
 		:december
 ]
 
+$center_value = 100
+
 def input_students
     puts "Please enter the names of the students"
     puts "To finish, just hit return twice"
@@ -51,34 +53,39 @@ def input_students
 end
 
 def print_header
-    puts "The students of Villains Academy".center(100)
-    puts "-------------".center(100)
+    puts "The students of Villains Academy".center($center_value)
+    puts "-------------".center($center_value)
     puts
 end
 
 def print_students(students)
-    cohorts = []
-    # Create an ordered array of possible cohorts
-    students.map do |student| 
-        cohorts[$months.index(student[:cohort])] = student[:cohort]
-    end
-    
-    cohorts.compact!
-
-    cohorts.each do |cohort|
-        # Position in list of each student
-        num = 1
-          
-        puts "Students in the #{cohort.to_s.capitalize} cohort".center(100)
-        puts "-------------".center(100)
-        students.each_with_index do |student, index|
-            if student[:cohort] == cohort
-                puts "#{num}. #{student[:name]}, IQ is #{student[:iq]}".center(100)
-                num += 1
-            end
+    if students.count >= 1
+        cohorts = []
+        # Create an ordered array of possible cohorts
+        students.map do |student| 
+            cohorts[$months.index(student[:cohort])] = student[:cohort]
         end
+        
+        cohorts.compact!
+    
+        cohorts.each do |cohort|
+            # Position in list of each student
+            num = 1
+              
+            puts "Students in the #{cohort.to_s.capitalize} cohort".center($center_value)
+            puts "-------------".center($center_value)
+            students.each_with_index do |student, index|
+                if student[:cohort] == cohort
+                    puts "#{num}. #{student[:name]}, IQ is #{student[:iq]}".center($center_value)
+                    num += 1
+                end
+            end
+            puts
+        end
+    else
+        puts "We have no students :(".center($center_value)
         puts
-    end    
+    end
 end
 
 def print_using_while(students)
@@ -106,13 +113,15 @@ def print_specific_letter(students)
 end
 
 def print_footer(names)
-    puts "-------------".center(100)
-    if names.length == 1
-        puts "Overall, we have #{names.count} great student".center(100)
-        puts
-    else
-        puts "Overall, we have #{names.count} great students".center(100)
-        puts
+    if names.count >= 1
+        puts "-------------".center($center_value)
+        if names.length == 1
+            puts "Overall, we have #{names.count} great student".center($center_value)
+            puts
+        else
+            puts "Overall, we have #{names.count} great students".center($center_value)
+            puts
+        end
     end
 end
 
